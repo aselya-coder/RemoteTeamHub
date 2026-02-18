@@ -4,7 +4,7 @@ import heroImage from "@/assets/hero-illustration.png";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen gradient-hero overflow-hidden">
+    <section id="beranda" className="relative min-h-screen gradient-hero overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-32 w-64 h-64 rounded-full bg-primary/10 blur-3xl" />

@@ -19,7 +19,7 @@ export function CTASection() {
         </p>
         <Button
           size="lg"
-          className="gradient-primary shadow-button text-base px-10 h-14 text-lg group"
+          className="gradient-primary shadow-button px-10 h-14 text-lg group"
         >
           Hire Sekarang
           <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
