@@ -1,9 +1,13 @@
 import { Users, Target, Award, Globe } from "lucide-react";
-import { useAdminStore } from "@/admin/store/useAdminStore";
-const icons = { Users, Target, Award, Globe } as const;
+
+const values = [
+  { icon: Users, title: "People First", desc: "Kami percaya bahwa setiap talent memiliki potensi luar biasa yang perlu disalurkan." },
+  { icon: Target, title: "Kualitas Tanpa Kompromi", desc: "Setiap talent melalui proses screening ketat untuk memastikan standar tertinggi." },
+  { icon: Award, title: "Transparansi", desc: "Sistem yang terbuka dan jelas, tanpa biaya tersembunyi." },
+  { icon: Globe, title: "Akses Global", desc: "Menghubungkan talent terbaik Indonesia dengan perusahaan di seluruh dunia." },
+];
 
 export function AboutSection() {
-  const { state } = useAdminStore();
   return (
     <section id="tentang" className="py-20 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
@@ -18,13 +22,10 @@ export function AboutSection() {
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {state.about.values.map((v) => (
+          {values.map((v) => (
             <div key={v.title} className="rounded-2xl border border-border bg-card p-6 shadow-card hover:shadow-card-hover transition-all duration-300">
               <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mb-4">
-                {(() => {
-                  const Icon = icons[v.icon as keyof typeof icons] || Users;
-                  return <Icon className="w-6 h-6 text-primary-foreground" />;
-                })()}
+                <v.icon className="w-6 h-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">{v.title}</h3>
               <p className="text-sm text-muted-foreground">{v.desc}</p>

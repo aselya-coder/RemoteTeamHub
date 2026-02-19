@@ -1,8 +1,25 @@
 import { Link } from "react-router-dom";
-import { useAdminStore } from "@/admin/store/useAdminStore";
+
+const footerLinks = {
+  Platform: [
+    { label: "Cari Talent", href: "/cari-talent" },
+    { label: "Cara Kerja", href: "/cara-kerja" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Blog", href: "/blog" },
+  ],
+  Perusahaan: [
+    { label: "Tentang Kami", href: "/tentang" },
+    { label: "Kontak", href: "/kontak" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Karir", href: "/karir" },
+  ],
+  Legal: [
+    { label: "Kebijakan Privasi", href: "/privacy" },
+    { label: "Syarat & Ketentuan", href: "/terms" },
+  ],
+};
 
 export function Footer() {
-  const { state } = useAdminStore();
   return (
     <footer className="bg-navy text-primary-foreground/80">
       <div className="container mx-auto px-4 lg:px-8 py-16">
@@ -25,7 +42,7 @@ export function Footer() {
             </p>
           </div>
 
-          {Object.entries(state.footerLinks).map(([title, links]) => (
+          {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
               <h4 className="font-semibold text-primary-foreground mb-4">{title}</h4>
               <ul className="space-y-2">

@@ -3,10 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { useAdminStore } from "@/admin/store/useAdminStore";
 
 export default function Kontak() {
-  const { state } = useAdminStore();
   return (
     <PageLayout>
       <div className="container mx-auto px-4 lg:px-8">
@@ -24,7 +22,7 @@ export default function Kontak() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Email</h3>
-                <p className="text-muted-foreground text-sm">{state.contacts.email}</p>
+                <p className="text-muted-foreground text-sm">hello@kerjatim.id</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -33,7 +31,7 @@ export default function Kontak() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Telepon</h3>
-                <p className="text-muted-foreground text-sm">{state.contacts.telepon}</p>
+                <p className="text-muted-foreground text-sm">+62 21 1234 5678</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -42,7 +40,7 @@ export default function Kontak() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Alamat</h3>
-                <p className="text-muted-foreground text-sm">{state.contacts.alamat}</p>
+                <p className="text-muted-foreground text-sm">Jakarta, Indonesia</p>
               </div>
             </div>
           </div>

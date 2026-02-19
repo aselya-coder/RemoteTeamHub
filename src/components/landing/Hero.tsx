@@ -1,12 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { buildWhatsAppLink } from "@/lib/utils";
 import { ArrowRight, Play } from "lucide-react";
 import heroImage from "@/assets/hero-illustration.png";
-import { useAdminStore } from "@/admin/store/useAdminStore";
 
 export function Hero() {
-  const { state } = useAdminStore();
   return (
     <section id="beranda" className="relative min-h-screen gradient-hero overflow-hidden">
       {/* Background decorations */}
@@ -26,25 +22,28 @@ export function Hero() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-primary-foreground">
-              {state.landing.hero_title}
+              Bangun Tim Profesional{" "}
+              <span className="text-gradient">Tanpa Proses Rekrut</span>{" "}
+              yang Rumit
             </h1>
 
             <p className="text-lg text-primary-foreground/70 max-w-lg leading-relaxed">
-              {state.landing.hero_subtitle}
+              Kami menyediakan Data Entry, Programmer, Designer, dan Admin Remote
+              siap kerja dalam <span className="text-primary font-semibold">7 hari</span>.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="gradient-primary shadow-button text-base px-8 h-12 group">
-                <Link to="/kategori">
-                  {state.landing.CTA_text}
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
+              <Button size="lg" className="gradient-primary shadow-button text-base px-8 h-12 group">
+                Hire Talent Sekarang
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-primary-foreground/20 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 text-base px-8 h-12">
-                <a href={buildWhatsAppLink("Halo KerjaTim.id, saya ingin mendaftar sebagai talent.") } target="_blank" rel="noopener noreferrer">
-                  <Play className="mr-2 h-4 w-4" />
-                  Daftar Sebagai Talent
-                </a>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary-foreground/20 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 text-base px-8 h-12"
+              >
+                <Play className="mr-2 h-4 w-4" />
+                Daftar Sebagai Talent
               </Button>
             </div>
 
