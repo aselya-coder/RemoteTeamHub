@@ -1,14 +1,10 @@
 import { MessageSquare, Search, Video, FileSignature, Rocket } from "lucide-react";
+import { useAdminStore } from "@/admin/store/useAdminStore";
 
-const steps = [
-  { icon: MessageSquare, title: "Konsultasi Kebutuhan", desc: "Ceritakan kebutuhan tim Anda kepada konsultan kami." },
-  { icon: Search, title: "Kami Seleksi Kandidat", desc: "Tim kami menyeleksi kandidat terbaik dari database." },
-  { icon: Video, title: "Interview Online", desc: "Lakukan interview langsung dengan kandidat terpilih." },
-  { icon: FileSignature, title: "Tanda Tangan Kontrak", desc: "Kontrak digital siap dalam hitungan menit." },
-  { icon: Rocket, title: "Tim Mulai Bekerja", desc: "Talent bergabung dan mulai produktif di hari pertama." },
-];
+const icons = { MessageSquare, Search, Video, FileSignature, Rocket } as const;
 
 export function HowItWorks() {
+  const { state } = useAdminStore();
   return (
     <section id="cara-kerja" className="py-20 bg-secondary/30">
       <div className="container mx-auto px-4 lg:px-8">
@@ -25,7 +21,7 @@ export function HowItWorks() {
           {/* Vertical line */}
           <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-px" />
 
-          {steps.map((step, i) => (
+          {state.steps.map((step, i) => (
             <div
               key={step.title}
               className={`relative flex items-start gap-6 mb-12 last:mb-0 ${
@@ -42,7 +38,10 @@ export function HowItWorks() {
                 i % 2 === 0 ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"
               }`}>
                 <div className="flex items-center gap-3 mb-2">
-                  <step.icon className="w-5 h-5 text-primary" />
+                  {(() => {
+                    const Icon = icons[step.icon as keyof typeof icons] || MessageSquare;
+                    return <Icon className="w-5 h-5 text-primary" />;
+                  })()}
                   <h3 className="font-semibold text-foreground">{step.title}</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">{step.desc}</p>

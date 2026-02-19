@@ -2,20 +2,13 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const navItems = [
-  { label: "Beranda", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Tentang Kami", href: "/#tentang" },
-  { label: "Kategori Talent", href: "/#kategori" },
-  { label: "Cara Kerja", href: "/#cara-kerja" },
-  { label: "Pricing", href: "/#pricing" },
-];
+import { useAdminStore } from "@/admin/store/useAdminStore";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { state } = useAdminStore();
   const isScrolled = scrolled || location.pathname !== "/";
 
   const handleScrollTop = () => {
@@ -48,7 +41,7 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6">
-          {navItems.map((item) => (
+          {state.navigation.map((item) => (
             <Link
               key={item.label}
               to={item.href}
@@ -63,11 +56,11 @@ export function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Button variant="ghost" size="sm" className={isScrolled ? "text-foreground" : "text-primary-foreground"}>
-            Masuk
+          <Button asChild variant="ghost" size="sm" className={isScrolled ? "text-foreground" : "text-primary-foreground"}>
+            <Link to="/kontak">Masuk</Link>
           </Button>
-          <Button size="sm" className="gradient-primary shadow-button">
-            Hire Talent
+          <Button asChild size="sm" className="gradient-primary shadow-button">
+            <Link to="/kategori">Hire Talent</Link>
           </Button>
         </div>
 
@@ -84,7 +77,7 @@ export function Navbar() {
       {isOpen && (
         <div className="lg:hidden bg-background border-b border-border animate-fade-in">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
-            {navItems.map((item) => (
+            {state.navigation.map((item) => (
               <Link
                 key={item.label}
                 to={item.href}
@@ -98,8 +91,12 @@ export function Navbar() {
               </Link>
             ))}
             <div className="flex gap-3 pt-3 border-t border-border">
-              <Button variant="outline" size="sm" className="flex-1">Masuk</Button>
-              <Button size="sm" className="flex-1 gradient-primary shadow-button">Hire Talent</Button>
+              <Button asChild variant="outline" size="sm" className="flex-1">
+                <Link to="/kontak" onClick={() => setIsOpen(false)}>Masuk</Link>
+              </Button>
+              <Button asChild size="sm" className="flex-1 gradient-primary shadow-button">
+                <Link to="/kategori" onClick={() => setIsOpen(false)}>Hire Talent</Link>
+              </Button>
             </div>
           </div>
         </div>
