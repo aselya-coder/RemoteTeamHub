@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useAdminStore, FAQ } from "../store/useAdminStore";
+import { useAdminStore } from "../store/useAdminStore";
+import type { FAQ as FAQItem } from "../store/useAdminStore";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -10,20 +11,20 @@ import { ConfirmDelete } from "../components/ConfirmDelete";
 export function FAQ() {
   const { state, actions } = useAdminStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deleteItem, setDeleteItem] = useState<FAQ | null>(null);
-  const [editingItem, setEditingItem] = useState<FAQ | null>(null);
+  const [deleteItem, setDeleteItem] = useState<FAQItem | null>(null);
+  const [editingItem, setEditingItem] = useState<FAQItem | null>(null);
 
   const handleAdd = () => {
     setEditingItem(null);
     setIsModalOpen(true);
   };
 
-  const handleEdit = (item: FAQ) => {
+  const handleEdit = (item: FAQItem) => {
     setEditingItem(item);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (item: FAQ) => {
+  const handleDelete = (item: FAQItem) => {
     setDeleteItem(item);
   };
 
@@ -38,7 +39,7 @@ export function FAQ() {
     const form = document.getElementById("faq-form") as HTMLFormElement;
     const formData = new FormData(form);
 
-    const faqData: FAQ = {
+    const faqData: FAQItem = {
       id: editingItem?.id || `f${Date.now()}`,
       pertanyaan: formData.get("pertanyaan") as string,
       jawaban: formData.get("jawaban") as string,
@@ -59,7 +60,7 @@ export function FAQ() {
     { 
       key: "jawaban", 
       header: "Jawaban",
-      render: (item: FAQ) => item.jawaban.substring(0, 100) + "..."
+      render: (item: FAQItem) => item.jawaban.substring(0, 100) + "..."
     },
   ];
 
