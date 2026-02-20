@@ -10,6 +10,7 @@ const navItems = [
   { label: "Kategori Talent", href: "/#kategori" },
   { label: "Cara Kerja", href: "/#cara-kerja" },
   { label: "Pricing", href: "/#pricing" },
+  { label: "Admin", href: "/admin" },
 ];
 
 export function Navbar() {

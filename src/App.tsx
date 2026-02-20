@@ -17,6 +17,8 @@ import Blog from "./pages/Blog";
 import Privasi from "./pages/Privasi";
 import SyaratKetentuan from "./pages/SyaratKetentuan";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import AdminLogin from "./pages/admin/Login";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/blog" element={<Blog />} />
           <Route path="/privacy" element={<Privasi />} />
           <Route path="/terms" element={<SyaratKetentuan />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
