@@ -404,7 +404,7 @@ const initialState: AdminState = {
   about: {
     judul: "Membangun Masa Depan Kerja Remote",
     deskripsi:
-      "KerjaTim.id adalah platform outsourcing tenaga kerja remote terdepan di Indonesia.",
+      "KerjaTim.id adalah platform outsourcing tenaga kerja remote terdepan di Indonesia. Kami menghubungkan perusahaan dengan talent berkualitas tanpa kerumitan proses rekrutmen tradisional.",
     visi: "Memberdayakan talent Indonesia untuk pasar global",
     misi: "Menyediakan proses hire yang cepat, transparan, dan berkualitas",
     values: [
