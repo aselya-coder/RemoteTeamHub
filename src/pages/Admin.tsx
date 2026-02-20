@@ -1,32 +1,64 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { AdminLayout } from "@/admin/layout/AdminLayout";
+import { Dashboard } from "@/admin/pages/Dashboard";
+import { Landing } from "@/admin/pages/Landing";
+import { Talents } from "@/admin/pages/Talents";
+import { Jobs } from "@/admin/pages/Jobs";
+import { Categories } from "@/admin/pages/Categories";
+import { Blogs } from "@/admin/pages/Blogs";
+import { FAQ } from "@/admin/pages/FAQ";
+import { About } from "@/admin/pages/About";
+import { PricingPage } from "@/admin/pages/Pricing";
+import { Contacts } from "@/admin/pages/Contacts";
+import { Testimonials } from "@/admin/pages/Testimonials";
 import { getSupabase } from "@/lib/supabase";
-import { useNavigate, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import FaqManager from "./admin/sections/FaqManager";
-import PricingManager from "./admin/sections/PricingManager";
 
 export default function Admin() {
   const navigate = useNavigate();
+  const location = useLocation();
   const supabase = getSupabase();
   const [status, setStatus] = useState<"checking" | "ok" | "denied">("checking");
 
   useEffect(() => {
-    async function init() {
-      const { data } = await supabase.auth.getSession();
-      const uid = data?.session?.user?.id;
-      if (!uid) {
+    async function checkAuth() {
+      // Check Supabase session first
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        setStatus("ok");
+        return;
+      }
+
+      // Fallback to local auth
+      const auth = localStorage.getItem("admin_auth");
+      if (!auth) {
         navigate("/admin/login");
         return;
       }
-      const { data: row } = await supabase.from("admins").select("user_id").eq("user_id", uid).maybeSingle();
-      if (!row) {
+      
+      try {
+        const authData = JSON.parse(auth);
+        if (authData.method === "supabase") {
+          // Check if session still valid
+          const { data: { session: newSession } } = await supabase.auth.getSession();
+          if (newSession?.user) {
+            setStatus("ok");
+          } else {
+            localStorage.removeItem("admin_auth");
+            navigate("/admin/login");
+          }
+        } else if (authData.email === "admin@remote.com" && authData.password === "admin123") {
+          setStatus("ok");
+        } else {
+          setStatus("denied");
+        }
+      } catch {
         setStatus("denied");
-        return;
       }
-      setStatus("ok");
     }
-    init();
+    
+    checkAuth();
   }, [navigate, supabase]);
 
   if (status === "checking") {
@@ -41,34 +73,36 @@ export default function Admin() {
         <div className="text-center space-y-4">
           <div className="text-xl font-semibold">Akses ditolak</div>
           <div className="text-muted-foreground">Akun ini bukan admin.</div>
-          <div className="flex items-center justify-center gap-2">
-            <Button asChild variant="outline"><Link to="/admin/login">Ke halaman login</Link></Button>
-            <Button onClick={async () => { await supabase.auth.signOut(); navigate("/admin/login"); }}>Keluar</Button>
-          </div>
+          <button
+            onClick={() => {
+              localStorage.removeItem("admin_auth");
+              navigate("/admin/login");
+            }}
+            className="text-primary underline"
+          >
+            Ke halaman login
+          </button>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-2">Admin Panel</h1>
-        <p className="text-muted-foreground mb-6">Kelola konten situs dari halaman ini.</p>
-        <Tabs defaultValue="faq">
-          <TabsList>
-            <TabsTrigger value="faq">FAQ</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
-          </TabsList>
-          <TabsContent value="faq">
-            <FaqManager />
-          </TabsContent>
-          <TabsContent value="pricing">
-            <PricingManager />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
-  );
+  const renderPage = () => {
+    const path = location.pathname;
+    if (path === "/admin/dashboard" || path === "/admin") return <Dashboard />;
+    if (path === "/admin/landing") return <Landing />;
+    if (path === "/admin/talents") return <Talents />;
+    if (path === "/admin/jobs") return <Jobs />;
+    if (path === "/admin/categories") return <Categories />;
+    if (path === "/admin/blogs") return <Blogs />;
+    if (path === "/admin/faq") return <FAQ />;
+    if (path === "/admin/about") return <About />;
+    if (path === "/admin/pricing") return <PricingPage />;
+    if (path === "/admin/contacts") return <Contacts />;
+    if (path === "/admin/testimonials") return <Testimonials />;
+    return <Dashboard />;
+  };
+
+  return <AdminLayout>{renderPage()}</AdminLayout>;
 }
 

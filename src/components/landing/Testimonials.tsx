@@ -1,38 +1,18 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-
-const testimonials = [
-  {
-    name: "Andi Wijaya",
-    role: "CEO, TechNusa",
-    text: "KerjaTim.id membantu kami menemukan 5 programmer berkualitas dalam waktu satu minggu. Prosesnya sangat cepat dan profesional.",
-    rating: 5,
-  },
-  {
-    name: "Sari Indah",
-    role: "HR Manager, StartupXYZ",
-    text: "Kontrak yang fleksibel dan talent yang sudah terscreening membuat kami menghemat waktu rekrutmen hingga 80%.",
-    rating: 5,
-  },
-  {
-    name: "Budi Santoso",
-    role: "CTO, DataPro Indonesia",
-    text: "Kualitas talent di KerjaTim.id sangat baik. Tim data entry kami sekarang 3x lebih produktif dengan biaya yang lebih efisien.",
-    rating: 5,
-  },
-  {
-    name: "Maya Putri",
-    role: "COO, DesainKu",
-    text: "Kami sudah mencoba banyak platform, tapi KerjaTim.id yang paling responsif dan memberikan kandidat yang paling sesuai.",
-    rating: 4,
-  },
-];
+import { useAdminStore } from "@/admin/store/useAdminStore";
 
 export function Testimonials() {
+  const { state } = useAdminStore();
+  const testimonials = state.testimonials;
   const [current, setCurrent] = useState(0);
+
+  if (testimonials.length === 0) return null;
 
   const prev = () => setCurrent((c) => (c === 0 ? testimonials.length - 1 : c - 1));
   const next = () => setCurrent((c) => (c === testimonials.length - 1 ? 0 : c + 1));
+
+  const currentTestimonial = testimonials[current];
 
   return (
     <section className="py-20 bg-background">
@@ -53,19 +33,19 @@ export function Testimonials() {
                 <Star
                   key={i}
                   className={`w-5 h-5 ${
-                    i < testimonials[current].rating ? "text-yellow-400 fill-yellow-400" : "text-border"
+                    i < (currentTestimonial.rating || 5) ? "text-yellow-400 fill-yellow-400" : "text-border"
                   }`}
                 />
               ))}
             </div>
 
             <p className="text-foreground text-lg leading-relaxed mb-6 italic">
-              "{testimonials[current].text}"
+              "{currentTestimonial.isi_testimoni}"
             </p>
 
             <div>
-              <p className="font-semibold text-foreground">{testimonials[current].name}</p>
-              <p className="text-sm text-muted-foreground">{testimonials[current].role}</p>
+              <p className="font-semibold text-foreground">{currentTestimonial.nama}</p>
+              <p className="text-sm text-muted-foreground">{currentTestimonial.jabatan}</p>
             </div>
 
             {/* Navigation */}

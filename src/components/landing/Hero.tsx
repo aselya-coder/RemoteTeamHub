@@ -1,8 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
+import { useAdminStore } from "@/admin/store/useAdminStore";
 import heroImage from "@/assets/hero-illustration.png";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 export function Hero() {
+  const { state } = useAdminStore();
+  const landing = state.landing;
+  const whatsappNumber = state.contacts.whatsapp;
+  
+  const whatsappHireMessage = `Halo, saya tertarik untuk *hire talent* melalui KerjaTim.id. Bisa tolong informasikan lebih lanjut?`;
+  const whatsappDaftarMessage = `Halo, saya ingin *daftar sebagai talent* di KerjaTim.id. Bagaimana caranya?`;
+
   return (
     <section id="beranda" className="relative min-h-screen gradient-hero overflow-hidden">
       {/* Background decorations */}
@@ -22,25 +31,27 @@ export function Hero() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-primary-foreground">
-              Bangun Tim Profesional{" "}
-              <span className="text-gradient">Tanpa Proses Rekrut</span>{" "}
-              yang Rumit
+              {landing.hero_title}
             </h1>
 
             <p className="text-lg text-primary-foreground/70 max-w-lg leading-relaxed">
-              Kami menyediakan Data Entry, Programmer, Designer, dan Admin Remote
-              siap kerja dalam <span className="text-primary font-semibold">7 hari</span>.
+              {landing.hero_subtitle}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gradient-primary shadow-button text-base px-8 h-12 group">
-                Hire Talent Sekarang
+              <Button 
+                size="lg" 
+                className="gradient-primary shadow-button text-base px-8 h-12 group"
+                onClick={() => window.open(getWhatsAppLink(whatsappHireMessage, whatsappNumber), '_blank')}
+              >
+                {landing.CTA_text}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-primary-foreground/20 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 text-base px-8 h-12"
+                onClick={() => window.open(getWhatsAppLink(whatsappDaftarMessage, whatsappNumber), '_blank')}
               >
                 <Play className="mr-2 h-4 w-4" />
                 Daftar Sebagai Talent
@@ -69,7 +80,7 @@ export function Hero() {
           <div className="relative hidden lg:block">
             <div className="animate-float">
               <img
-                src={heroImage}
+                src={landing.hero_image && landing.hero_image.trim() !== '' && (landing.hero_image.startsWith('http') || landing.hero_image.startsWith('//')) ? landing.hero_image : heroImage}
                 alt="Tim remote bekerja bersama"
                 className="w-full rounded-2xl"
               />
