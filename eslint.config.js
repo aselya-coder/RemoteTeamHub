@@ -21,21 +21,6 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/no-require-imports": "off",
-    },
-  },
-  {
-    files: ["*.config.{js,ts}", "tailwind.config.{js,ts}", "postcss.config.{js,ts}", "vite.config.{js,ts}", "eslint.config.{js,ts}"],
-    rules: {
-      "@typescript-eslint/no-require-imports": "off",
-    },
-  },
-  {
-    files: ["src/components/ui/**/*.tsx", "src/**/store/**/*.ts", "src/**/store/**/*.tsx"],
-    rules: {
-      "react-refresh/only-export-components": "off",
     },
   },
 );

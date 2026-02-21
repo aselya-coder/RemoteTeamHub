@@ -1,61 +1,38 @@
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getSupabase } from "@/lib/supabase";
+
+const footerLinks = {
+  Platform: [
+    { label: "Cari Talent", href: "#kategori" },
+    { label: "Cara Kerja", href: "#cara-kerja" },
+    { label: "Pricing", href: "#pricing" },
+    { label: "Blog", href: "/blog" },
+  ],
+  Perusahaan: [
+    { label: "Tentang Kami", href: "/tentang" },
+    { label: "Kontak", href: "/kontak" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Karir", href: "#" },
+  ],
+  Legal: [
+    { label: "Kebijakan Privasi", href: "/privasi" },
+    { label: "Syarat & Ketentuan", href: "/syarat-ketentuan" },
+  ],
+};
 
 export function Footer() {
-  const supabase = getSupabase();
-  const { data: sections } = useQuery({
-    queryKey: ["footer_links"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("footer_links")
-        .select("section, label, href, position")
-        .order("section")
-        .order("position");
-      if (error) throw error;
-      const grouped: Record<string, { label: string; href: string }[]> = {};
-      for (const row of data || []) {
-        grouped[row.section] ||= [];
-        grouped[row.section].push({ label: row.label, href: row.href });
-      }
-      return grouped;
-    },
-  });
-  const footerLinks = sections || {
-    Platform: [
-      { label: "Cari Talent", href: "/cari-talent" },
-      { label: "Cara Kerja", href: "/cara-kerja" },
-      { label: "Pricing", href: "/pricing" },
-      { label: "Blog", href: "/blog" },
-    ],
-    Perusahaan: [
-      { label: "Tentang Kami", href: "/tentang" },
-      { label: "Kontak", href: "/kontak" },
-      { label: "FAQ", href: "/faq" },
-      { label: "Karir", href: "/karir" },
-    ],
-    Legal: [
-      { label: "Kebijakan Privasi", href: "/privacy" },
-      { label: "Syarat & Ketentuan", href: "/terms" },
-    ],
-  };
   return (
     <footer className="bg-navy text-primary-foreground/80">
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid md:grid-cols-4 gap-10">
           <div>
-            <Link 
-              to="/" 
-              className="flex items-center gap-2 mb-4"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            >
+            <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">K</span>
               </div>
               <span className="font-bold text-lg text-primary-foreground">
                 KerjaTim<span className="text-primary">.id</span>
               </span>
-            </Link>
+            </div>
             <p className="text-sm text-primary-foreground/60 leading-relaxed">
               Sewa Tim Remote Siap Kerja Tanpa Ribet Rekrut. Platform outsourcing #1 di Indonesia.
             </p>
@@ -65,14 +42,17 @@ export function Footer() {
             <div key={title}>
               <h4 className="font-semibold text-primary-foreground mb-4">{title}</h4>
               <ul className="space-y-2">
-                {links.map((link: any) => (
+                {links.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      to={link.href}
-                      className="text-sm text-primary-foreground/60 hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.href.startsWith("#") || link.href === "#" ? (
+                      <a href={link.href} className="text-sm text-primary-foreground/60 hover:text-primary transition-colors">
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link to={link.href} className="text-sm text-primary-foreground/60 hover:text-primary transition-colors">
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

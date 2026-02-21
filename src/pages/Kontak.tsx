@@ -3,23 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { useAdminStore } from "@/admin/store/useAdminStore";
-import { getWhatsAppLink } from "@/lib/whatsapp";
-import { useState } from "react";
 
 export default function Kontak() {
-  const { state } = useAdminStore();
-  const contacts = state.contacts;
-  const [formData, setFormData] = useState({ nama: "", email: "", subjek: "", pesan: "" });
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const message = `Halo, saya *${formData.nama}* (${formData.email}).\n\nSubjek: ${formData.subjek}\n\nPesan:\n${formData.pesan}`;
-    window.open(getWhatsAppLink(message, contacts.whatsapp), '_blank');
-    // Reset form setelah submit
-    setFormData({ nama: "", email: "", subjek: "", pesan: "" });
-  };
-
   return (
     <PageLayout>
       <div className="container mx-auto px-4 lg:px-8">
@@ -37,62 +22,38 @@ export default function Kontak() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Email</h3>
-                <p className="text-muted-foreground text-sm">{contacts.email}</p>
+                <p className="text-muted-foreground text-sm">hello@kerjatim.id</p>
               </div>
             </div>
-            {contacts.telepon && (
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">Telepon</h3>
-                  <p className="text-muted-foreground text-sm">{contacts.telepon}</p>
-                </div>
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
+                <Phone className="w-5 h-5 text-primary-foreground" />
               </div>
-            )}
+              <div>
+                <h3 className="font-semibold text-foreground">Telepon</h3>
+                <p className="text-muted-foreground text-sm">+62 21 1234 5678</p>
+              </div>
+            </div>
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
                 <MapPin className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Alamat</h3>
-                <p className="text-muted-foreground text-sm">{contacts.alamat}</p>
+                <p className="text-muted-foreground text-sm">Jakarta, Indonesia</p>
               </div>
             </div>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
-                <Input 
-                  placeholder="Nama Lengkap" 
-                  value={formData.nama}
-                  onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                  required
-                />
-                <Input 
-                  placeholder="Email" 
-                  type="email" 
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                />
+                <Input placeholder="Nama Lengkap" />
+                <Input placeholder="Email" type="email" />
               </div>
-              <Input 
-                placeholder="Subjek" 
-                value={formData.subjek}
-                onChange={(e) => setFormData({ ...formData, subjek: e.target.value })}
-                required
-              />
-              <Textarea 
-                placeholder="Pesan Anda" 
-                rows={5}
-                value={formData.pesan}
-                onChange={(e) => setFormData({ ...formData, pesan: e.target.value })}
-                required
-              />
-              <Button type="submit" className="w-full gradient-primary shadow-button">Kirim Pesan via WhatsApp</Button>
+              <Input placeholder="Subjek" />
+              <Textarea placeholder="Pesan Anda" rows={5} />
+              <Button className="w-full gradient-primary shadow-button">Kirim Pesan</Button>
             </form>
           </div>
         </div>

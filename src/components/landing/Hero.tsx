@@ -1,45 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroImage from "@/assets/hero-illustration.png";
-import { getWhatsAppLink } from "@/lib/whatsapp";
-import { useQuery } from "@tanstack/react-query";
-import { getSupabase } from "@/lib/supabase";
 
 export function Hero() {
-  const supabase = getSupabase();
-  const { data: landing } = useQuery({
-    queryKey: ["landing_hero"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("landing")
-        .select("hero_title, hero_subtitle, hero_image, CTA_text")
-        .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      return (
-        data || {
-          hero_title: "KerjaTim.id",
-          hero_subtitle: "Sewa tim remote siap kerja",
-          hero_image: "",
-          CTA_text: "Hire Sekarang",
-        }
-      );
-    },
-  });
-  const { data: whatsappNumber } = useQuery({
-    queryKey: ["contacts_whatsapp"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("contacts").select("whatsapp").limit(1).maybeSingle();
-      if (error) throw error;
-      return data?.whatsapp as string | undefined;
-    },
-  });
-  
-  const whatsappHireMessage = `Halo, saya tertarik untuk *hire talent* melalui KerjaTim.id. Bisa tolong informasikan lebih lanjut?`;
-  const whatsappDaftarMessage = `Halo, saya ingin *daftar sebagai talent* di KerjaTim.id. Bagaimana caranya?`;
-
   return (
-    <section id="beranda" className="relative min-h-screen gradient-hero overflow-hidden">
+    <section className="relative min-h-screen gradient-hero overflow-hidden">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-32 w-64 h-64 rounded-full bg-primary/10 blur-3xl" />
@@ -57,27 +22,25 @@ export function Hero() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-primary-foreground">
-              {landing?.hero_title}
+              Bangun Tim Profesional{" "}
+              <span className="text-gradient">Tanpa Proses Rekrut</span>{" "}
+              yang Rumit
             </h1>
 
             <p className="text-lg text-primary-foreground/70 max-w-lg leading-relaxed">
-              {landing?.hero_subtitle}
+              Kami menyediakan Data Entry, Programmer, Designer, dan Admin Remote
+              siap kerja dalam <span className="text-primary font-semibold">7 hari</span>.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                className="gradient-primary shadow-button text-base px-8 h-12 group"
-                onClick={() => window.open(getWhatsAppLink(whatsappHireMessage, whatsappNumber), '_blank')}
-              >
-                {landing?.CTA_text || "Hire Sekarang"}
+              <Button size="lg" className="gradient-primary shadow-button text-base px-8 h-12 group">
+                Hire Talent Sekarang
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-primary-foreground/20 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 text-base px-8 h-12"
-                onClick={() => window.open(getWhatsAppLink(whatsappDaftarMessage, whatsappNumber), '_blank')}
               >
                 <Play className="mr-2 h-4 w-4" />
                 Daftar Sebagai Talent
@@ -106,7 +69,7 @@ export function Hero() {
           <div className="relative hidden lg:block">
             <div className="animate-float">
               <img
-                src={landing?.hero_image && landing.hero_image.trim() !== '' && (landing.hero_image.startsWith('http') || landing.hero_image.startsWith('//')) ? landing.hero_image : heroImage}
+                src={heroImage}
                 alt="Tim remote bekerja bersama"
                 className="w-full rounded-2xl"
               />

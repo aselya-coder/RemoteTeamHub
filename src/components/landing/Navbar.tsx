@@ -1,38 +1,22 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { getSupabase } from "@/lib/supabase";
+
+const navItems = [
+  { label: "Beranda", href: "/" },
+  { label: "Kategori Talent", href: "#kategori" },
+  { label: "Cara Kerja", href: "#cara-kerja" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Tentang Kami", href: "/tentang" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Blog", href: "/blog" },
+  { label: "Kontak", href: "/kontak" },
+];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const isScrolled = scrolled || location.pathname !== "/";
-
-  const supabase = getSupabase();
-  const { data: navItems } = useQuery({
-    queryKey: ["navigation_items"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("navigation_items").select("label, href, position").order("position");
-      if (error) throw error;
-      const defaults = [
-        { label: "Beranda", href: "/" },
-        { label: "About", href: "/#about" },
-        { label: "Tentang Kami", href: "/#tentang" },
-        { label: "Kategori Talent", href: "/#kategori" },
-        { label: "Cara Kerja", href: "/#cara-kerja" },
-        { label: "Pricing", href: "/#pricing" },
-      ];
-      const items = (data || []).length ? data : defaults;
-      return [...items, { label: "Admin", href: "/admin" }];
-    },
-  });
-
-  const handleScrollTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -43,50 +27,61 @@ export function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+        scrolled
           ? "bg-background/95 backdrop-blur-md shadow-card border-b border-border"
           : "bg-transparent"
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
-        <Link to="/" className="flex items-center gap-2" onClick={handleScrollTop}>
+        <Link to="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-sm">K</span>
           </div>
-          <span className={`font-bold text-lg ${isScrolled ? "text-foreground" : "text-primary-foreground"}`}>
+          <span className={`font-bold text-lg ${scrolled ? "text-foreground" : "text-primary-foreground"}`}>
             KerjaTim<span className="text-primary">.id</span>
           </span>
         </Link>
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6">
-          {(navItems || []).map((item: any) => (
-            <Link
-              key={item.label}
-              to={item.href}
-              onClick={item.href === "/" ? handleScrollTop : undefined}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isScrolled ? "text-muted-foreground" : "text-primary-foreground/80"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navItems.slice(0, 5).map((item) =>
+            item.href.startsWith("#") ? (
+              <a
+                key={item.label}
+                href={item.href}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  scrolled ? "text-muted-foreground" : "text-primary-foreground/80"
+                }`}
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.label}
+                to={item.href}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  scrolled ? "text-muted-foreground" : "text-primary-foreground/80"
+                }`}
+              >
+                {item.label}
+              </Link>
+            )
+          )}
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Button asChild variant="ghost" size="sm" className={isScrolled ? "text-foreground" : "text-primary-foreground"}>
-            <Link to="/kontak">Masuk</Link>
+          <Button variant="ghost" size="sm" className={scrolled ? "text-foreground" : "text-primary-foreground"}>
+            Masuk
           </Button>
-          <Button asChild size="sm" className="gradient-primary shadow-button">
-            <Link to="/cari-talent">Hire Talent</Link>
+          <Button size="sm" className="gradient-primary shadow-button">
+            Hire Talent
           </Button>
         </div>
 
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`lg:hidden p-2 ${isScrolled ? "text-foreground" : "text-primary-foreground"}`}
+          className={`lg:hidden p-2 ${scrolled ? "text-foreground" : "text-primary-foreground"}`}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -96,26 +91,30 @@ export function Navbar() {
       {isOpen && (
         <div className="lg:hidden bg-background border-b border-border animate-fade-in">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
-            {(navItems || []).map((item: any) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                onClick={() => {
-                  setIsOpen(false);
-                  if (item.href === "/") handleScrollTop();
-                }}
-                className="text-sm font-medium text-muted-foreground hover:text-primary py-2"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) =>
+              item.href.startsWith("#") ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary py-2"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary py-2"
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
             <div className="flex gap-3 pt-3 border-t border-border">
-              <Button asChild variant="outline" size="sm" className="flex-1">
-                <Link to="/kontak" onClick={() => setIsOpen(false)}>Masuk</Link>
-              </Button>
-              <Button asChild size="sm" className="flex-1 gradient-primary shadow-button">
-                <Link to="/cari-talent" onClick={() => setIsOpen(false)}>Hire Talent</Link>
-              </Button>
+              <Button variant="outline" size="sm" className="flex-1">Masuk</Button>
+              <Button size="sm" className="flex-1 gradient-primary">Hire Talent</Button>
             </div>
           </div>
         </div>
