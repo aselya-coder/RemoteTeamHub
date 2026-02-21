@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { useAdminStore } from "@/admin/store/useAdminStore";
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 
 export function Testimonials() {
-  const { state } = useAdminStore();
-  const testimonials = state.testimonials;
+  const supabase = getSupabase();
+  const { data: testimonials } = useQuery({
+    queryKey: ["testimonials_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("testimonials").select("nama, jabatan, isi_testimoni, rating").order("nama");
+      if (error) throw error;
+      return data || [];
+    },
+  });
   const [current, setCurrent] = useState(0);
 
-  if (testimonials.length === 0) return null;
+  if (!testimonials || testimonials.length === 0) return null;
 
   const prev = () => setCurrent((c) => (c === 0 ? testimonials.length - 1 : c - 1));
   const next = () => setCurrent((c) => (c === testimonials.length - 1 ? 0 : c + 1));
@@ -51,7 +59,7 @@ export function Testimonials() {
             {/* Navigation */}
             <div className="flex items-center justify-between mt-8">
               <div className="flex gap-2">
-                {testimonials.map((_, i) => (
+                {testimonials.map((_: any, i: number) => (
                   <button
                     key={i}
                     onClick={() => setCurrent(i)}

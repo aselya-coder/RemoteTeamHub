@@ -1,13 +1,39 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
-import { useAdminStore } from "@/admin/store/useAdminStore";
 import heroImage from "@/assets/hero-illustration.png";
 import { getWhatsAppLink } from "@/lib/whatsapp";
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 
 export function Hero() {
-  const { state } = useAdminStore();
-  const landing = state.landing;
-  const whatsappNumber = state.contacts.whatsapp;
+  const supabase = getSupabase();
+  const { data: landing } = useQuery({
+    queryKey: ["landing_hero"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("landing")
+        .select("hero_title, hero_subtitle, hero_image, CTA_text")
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return (
+        data || {
+          hero_title: "KerjaTim.id",
+          hero_subtitle: "Sewa tim remote siap kerja",
+          hero_image: "",
+          CTA_text: "Hire Sekarang",
+        }
+      );
+    },
+  });
+  const { data: whatsappNumber } = useQuery({
+    queryKey: ["contacts_whatsapp"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("contacts").select("whatsapp").limit(1).maybeSingle();
+      if (error) throw error;
+      return data?.whatsapp as string | undefined;
+    },
+  });
   
   const whatsappHireMessage = `Halo, saya tertarik untuk *hire talent* melalui KerjaTim.id. Bisa tolong informasikan lebih lanjut?`;
   const whatsappDaftarMessage = `Halo, saya ingin *daftar sebagai talent* di KerjaTim.id. Bagaimana caranya?`;
@@ -31,11 +57,11 @@ export function Hero() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-primary-foreground">
-              {landing.hero_title}
+              {landing?.hero_title}
             </h1>
 
             <p className="text-lg text-primary-foreground/70 max-w-lg leading-relaxed">
-              {landing.hero_subtitle}
+              {landing?.hero_subtitle}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -44,7 +70,7 @@ export function Hero() {
                 className="gradient-primary shadow-button text-base px-8 h-12 group"
                 onClick={() => window.open(getWhatsAppLink(whatsappHireMessage, whatsappNumber), '_blank')}
               >
-                {landing.CTA_text}
+                {landing?.CTA_text || "Hire Sekarang"}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
               <Button
@@ -80,7 +106,7 @@ export function Hero() {
           <div className="relative hidden lg:block">
             <div className="animate-float">
               <img
-                src={landing.hero_image && landing.hero_image.trim() !== '' && (landing.hero_image.startsWith('http') || landing.hero_image.startsWith('//')) ? landing.hero_image : heroImage}
+                src={landing?.hero_image && landing.hero_image.trim() !== '' && (landing.hero_image.startsWith('http') || landing.hero_image.startsWith('//')) ? landing.hero_image : heroImage}
                 alt="Tim remote bekerja bersama"
                 className="w-full rounded-2xl"
               />

@@ -1,13 +1,28 @@
 import { Button } from "@/components/ui/button";
-import { useAdminStore } from "@/admin/store/useAdminStore";
 import * as LucideIcons from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { getWhatsAppLink } from "@/lib/whatsapp";
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 
 export function TalentCategories() {
-  const { state } = useAdminStore();
-  const categories = state.categories;
-  const whatsappNumber = state.contacts.whatsapp;
+  const supabase = getSupabase();
+  const { data: categories } = useQuery({
+    queryKey: ["categories_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("id, slug, nama, icon, deskripsi, harga").order("nama");
+      if (error) throw error;
+      return data || [];
+    },
+  });
+  const { data: whatsappNumber } = useQuery({
+    queryKey: ["contacts_whatsapp"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("contacts").select("whatsapp").limit(1).maybeSingle();
+      if (error) throw error;
+      return data?.whatsapp as string | undefined;
+    },
+  });
   
   const getCategoryMessage = (categoryName: string) => {
     return `Halo, saya tertarik untuk mencari talent di kategori *${categoryName}*. Bisa tolong informasikan lebih lanjut?`;
@@ -31,7 +46,7 @@ export function TalentCategories() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((cat) => {
+          {(categories || []).map((cat: any) => {
             const Icon = getIcon(cat.icon);
             return (
               <div

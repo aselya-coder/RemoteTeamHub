@@ -2,22 +2,33 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const navItems = [
-  { label: "Beranda", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Tentang Kami", href: "/#tentang" },
-  { label: "Kategori Talent", href: "/#kategori" },
-  { label: "Cara Kerja", href: "/#cara-kerja" },
-  { label: "Pricing", href: "/#pricing" },
-  { label: "Admin", href: "/admin" },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const isScrolled = scrolled || location.pathname !== "/";
+
+  const supabase = getSupabase();
+  const { data: navItems } = useQuery({
+    queryKey: ["navigation_items"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("navigation_items").select("label, href, position").order("position");
+      if (error) throw error;
+      const defaults = [
+        { label: "Beranda", href: "/" },
+        { label: "About", href: "/#about" },
+        { label: "Tentang Kami", href: "/#tentang" },
+        { label: "Kategori Talent", href: "/#kategori" },
+        { label: "Cara Kerja", href: "/#cara-kerja" },
+        { label: "Pricing", href: "/#pricing" },
+      ];
+      const items = (data || []).length ? data : defaults;
+      return [...items, { label: "Admin", href: "/admin" }];
+    },
+  });
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -49,7 +60,7 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-6">
-          {navItems.map((item) => (
+          {(navItems || []).map((item: any) => (
             <Link
               key={item.label}
               to={item.href}
@@ -85,7 +96,7 @@ export function Navbar() {
       {isOpen && (
         <div className="lg:hidden bg-background border-b border-border animate-fade-in">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
-            {navItems.map((item) => (
+            {(navItems || []).map((item: any) => (
               <Link
                 key={item.label}
                 to={item.href}

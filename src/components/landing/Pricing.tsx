@@ -1,12 +1,40 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAdminStore } from "@/admin/store/useAdminStore";
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 import { getWhatsAppLink } from "@/lib/whatsapp";
 
 export function Pricing() {
-  const { state } = useAdminStore();
-  const pricing = state.pricing;
-  const whatsappNumber = state.contacts.whatsapp;
+  const supabase = getSupabase();
+  const { data: pricingData } = useQuery({
+    queryKey: ["pricing_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("pricing")
+        .select("id, nama_paket, harga, highlight, periode, deskripsi, pricing_features(feature, position)")
+        .order("nama_paket");
+      if (error) throw error;
+      return (data || []).map((p: any) => ({
+        id: p.id,
+        nama_paket: p.nama_paket,
+        harga: p.harga || "",
+        highlight: !!p.highlight,
+        periode: p.periode || "/talent/bulan",
+        deskripsi: p.deskripsi || "",
+        fitur: (p.pricing_features || []).sort((a: any,b: any)=> (a.position||0)-(b.position||0)).map((f: any) => f.feature),
+      }));
+    },
+  });
+  const { data: contactData } = useQuery({
+    queryKey: ["contacts_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("contacts").select("whatsapp").limit(1).maybeSingle();
+      if (error) throw error;
+      return data?.whatsapp as string | undefined;
+    },
+  });
+  const pricing = pricingData || [];
+  const whatsappNumber = contactData;
   
   const getPricingMessage = (planName: string) => {
     if (planName === "Enterprise") {
@@ -59,7 +87,7 @@ export function Pricing() {
               </div>
 
               <ul className="space-y-3 mb-8">
-                {plan.fitur.map((f) => (
+                {plan.fitur.map((f: string) => (
                   <li key={f} className="flex items-center gap-2 text-sm">
                     <Check className={`w-4 h-4 flex-shrink-0 ${plan.highlight ? "text-blue-glow" : "text-primary"}`} />
                     <span>{f}</span>

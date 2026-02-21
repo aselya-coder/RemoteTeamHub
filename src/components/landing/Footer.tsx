@@ -1,25 +1,44 @@
 import { Link } from "react-router-dom";
-
-const footerLinks = {
-  Platform: [
-    { label: "Cari Talent", href: "/cari-talent" },
-    { label: "Cara Kerja", href: "/cara-kerja" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Blog", href: "/blog" },
-  ],
-  Perusahaan: [
-    { label: "Tentang Kami", href: "/tentang" },
-    { label: "Kontak", href: "/kontak" },
-    { label: "FAQ", href: "/faq" },
-    { label: "Karir", href: "/karir" },
-  ],
-  Legal: [
-    { label: "Kebijakan Privasi", href: "/privacy" },
-    { label: "Syarat & Ketentuan", href: "/terms" },
-  ],
-};
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 
 export function Footer() {
+  const supabase = getSupabase();
+  const { data: sections } = useQuery({
+    queryKey: ["footer_links"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("footer_links")
+        .select("section, label, href, position")
+        .order("section")
+        .order("position");
+      if (error) throw error;
+      const grouped: Record<string, { label: string; href: string }[]> = {};
+      for (const row of data || []) {
+        grouped[row.section] ||= [];
+        grouped[row.section].push({ label: row.label, href: row.href });
+      }
+      return grouped;
+    },
+  });
+  const footerLinks = sections || {
+    Platform: [
+      { label: "Cari Talent", href: "/cari-talent" },
+      { label: "Cara Kerja", href: "/cara-kerja" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "Blog", href: "/blog" },
+    ],
+    Perusahaan: [
+      { label: "Tentang Kami", href: "/tentang" },
+      { label: "Kontak", href: "/kontak" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Karir", href: "/karir" },
+    ],
+    Legal: [
+      { label: "Kebijakan Privasi", href: "/privacy" },
+      { label: "Syarat & Ketentuan", href: "/terms" },
+    ],
+  };
   return (
     <footer className="bg-navy text-primary-foreground/80">
       <div className="container mx-auto px-4 lg:px-8 py-16">
@@ -46,7 +65,7 @@ export function Footer() {
             <div key={title}>
               <h4 className="font-semibold text-primary-foreground mb-4">{title}</h4>
               <ul className="space-y-2">
-                {links.map((link) => (
+                {links.map((link: any) => (
                   <li key={link.label}>
                     <Link
                       to={link.href}

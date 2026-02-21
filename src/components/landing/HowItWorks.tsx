@@ -1,10 +1,18 @@
-import { useAdminStore } from "@/admin/store/useAdminStore";
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 import * as LucideIcons from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 export function HowItWorks() {
-  const { state } = useAdminStore();
-  const steps = state.steps;
+  const supabase = getSupabase();
+  const { data: steps } = useQuery({
+    queryKey: ["steps_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("steps").select("icon, title, description, position").order("position");
+      if (error) throw error;
+      return data?.map((r: any) => ({ icon: r.icon, title: r.title, desc: r.description })) || [];
+    },
+  });
 
   const getIcon = (iconName: string): LucideIcon => {
     const Icon = (LucideIcons as any)[iconName] as LucideIcon;
@@ -27,7 +35,7 @@ export function HowItWorks() {
           {/* Vertical line */}
           <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-px" />
 
-          {steps.map((step, i) => {
+          {(steps || []).map((step: any, i: number) => {
             const Icon = getIcon(step.icon);
             return (
               <div

@@ -1,10 +1,18 @@
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { useAdminStore } from "@/admin/store/useAdminStore";
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 
 export default function FAQ() {
-  const { state } = useAdminStore();
-  const faqs = state.faq;
+  const supabase = getSupabase();
+  const { data: faqs } = useQuery({
+    queryKey: ["faqs_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("faqs").select("id, pertanyaan, jawaban").order("pertanyaan");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   return (
     <PageLayout>
@@ -16,7 +24,7 @@ export default function FAQ() {
           </div>
 
           <Accordion type="single" collapsible className="space-y-3">
-            {faqs.map((faq) => (
+            {(faqs || []).map((faq: any) => (
               <AccordionItem key={faq.id} value={faq.id} className="rounded-xl border border-border bg-card px-6 shadow-card">
                 <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline">
                   {faq.pertanyaan}

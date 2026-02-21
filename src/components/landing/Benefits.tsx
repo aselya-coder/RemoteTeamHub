@@ -1,10 +1,18 @@
-import { useAdminStore } from "@/admin/store/useAdminStore";
+import { useQuery } from "@tanstack/react-query";
+import { getSupabase } from "@/lib/supabase";
 import * as LucideIcons from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 export function Benefits() {
-  const { state } = useAdminStore();
-  const benefits = state.benefits;
+  const supabase = getSupabase();
+  const { data: benefits } = useQuery({
+    queryKey: ["benefits_public"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("benefits").select("icon, title, description").order("title");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   const getIcon = (iconName: string): LucideIcon => {
     const Icon = (LucideIcons as any)[iconName] as LucideIcon;
@@ -25,7 +33,7 @@ export function Benefits() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {benefits.map((b, i) => {
+          {(benefits || []).map((b: any, i: number) => {
             const Icon = getIcon(b.icon);
             return (
               <div
