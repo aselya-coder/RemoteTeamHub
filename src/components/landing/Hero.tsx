@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import heroImage from "@/assets/hero-illustration.png";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 export function Hero() {
   return (
@@ -33,7 +34,12 @@ export function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gradient-primary shadow-button text-base px-8 h-12 group">
+              <Button size="lg" className="gradient-primary shadow-button text-base px-8 h-12 group"
+                onClick={() => {
+                  const url = getWhatsAppLink("Halo, saya ingin hire talent.");
+                  window.open(url, "_blank");
+                }}
+              >
                 Hire Talent Sekarang
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -41,6 +47,10 @@ export function Hero() {
                 size="lg"
                 variant="outline"
                 className="border-primary-foreground/20 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 text-base px-8 h-12"
+                onClick={() => {
+                  const url = getWhatsAppLink("Halo, saya ingin daftar sebagai talent.");
+                  window.open(url, "_blank");
+                }}
               >
                 <Play className="mr-2 h-4 w-4" />
                 Daftar Sebagai Talent

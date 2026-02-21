@@ -1,5 +1,6 @@
 import { Database, Code, Palette, PenTool, Headphones, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 const categories = [
   { icon: Database, title: "Data Entry", salary: "Rp 3.5 Jt", desc: "Pengelolaan data akurat & cepat" },
@@ -39,7 +40,12 @@ export function TalentCategories() {
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-1">{cat.title}</h3>
               <p className="text-sm text-muted-foreground mb-4">{cat.desc}</p>
-              <Button variant="outline" size="sm" className="w-full group-hover:gradient-primary group-hover:text-primary-foreground group-hover:border-transparent transition-all">
+              <Button variant="outline" size="sm" className="w-full group-hover:gradient-primary group-hover:text-primary-foreground group-hover:border-transparent transition-all"
+                onClick={() => {
+                  const url = getWhatsAppLink(`Halo, saya tertarik talent kategori *${cat.title}*. Mohon informasinya.`);
+                  window.open(url, "_blank");
+                }}
+              >
                 Lihat Detail
               </Button>
             </div>

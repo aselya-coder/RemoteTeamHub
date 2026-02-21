@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 const plans = [
   {
@@ -111,6 +112,14 @@ export function Pricing() {
                     ? "bg-primary-foreground text-navy hover:bg-primary-foreground/90"
                     : "gradient-primary text-primary-foreground shadow-button"
                 }`}
+                onClick={() => {
+                  const msg =
+                    plan.name === "Enterprise"
+                      ? `Halo, saya tertarik dengan paket *${plan.name}*. Mohon informasi lebih lanjut.`
+                      : `Halo, saya tertarik berlangganan paket *${plan.name}*. Mohon informasi lebih lanjut.`;
+                  const url = getWhatsAppLink(msg);
+                  window.open(url, "_blank");
+                }}
               >
                 {plan.name === "Enterprise" ? "Hubungi Kami" : "Mulai Sekarang"}
               </Button>

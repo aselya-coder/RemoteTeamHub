@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 export function CTASection() {
   return (
@@ -20,6 +21,12 @@ export function CTASection() {
         <Button
           size="lg"
           className="gradient-primary shadow-button px-10 h-14 text-lg group"
+          onClick={() => {
+            const url = getWhatsAppLink(
+              "Halo, saya ingin hire talent melalui KerjaTim.id. Mohon informasinya.",
+            );
+            window.open(url, "_blank");
+          }}
         >
           Hire Sekarang
           <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const footerLinks = {
   Platform: [
@@ -20,19 +20,30 @@ const footerLinks = {
 };
 
 export function Footer() {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   return (
     <footer className="bg-navy text-primary-foreground/80">
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid md:grid-cols-4 gap-10">
           <div>
-            <div className="flex items-center gap-2 mb-4">
+            <Link
+              to="/"
+              className="flex items-center gap-2 mb-4"
+              onClick={(e) => {
+                if (isHome) {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+            >
               <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">K</span>
               </div>
               <span className="font-bold text-lg text-primary-foreground">
                 KerjaTim<span className="text-primary">.id</span>
               </span>
-            </div>
+            </Link>
             <p className="text-sm text-primary-foreground/60 leading-relaxed">
               Sewa Tim Remote Siap Kerja Tanpa Ribet Rekrut. Platform outsourcing #1 di Indonesia.
             </p>

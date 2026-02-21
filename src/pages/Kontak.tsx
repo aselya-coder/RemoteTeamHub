@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 export default function Kontak() {
   return (
@@ -31,7 +32,12 @@ export default function Kontak() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Telepon</h3>
-                <p className="text-muted-foreground text-sm">+62 21 1234 5678</p>
+                <p className="text-muted-foreground text-sm"
+                  onClick={() => {
+                    const url = getWhatsAppLink("Halo, saya ingin berkonsultasi.", "+62 21 1234 5678");
+                    window.open(url, "_blank");
+                  }}
+                >+62 21 1234 5678</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -48,12 +54,27 @@ export default function Kontak() {
           <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
             <form className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
-                <Input placeholder="Nama Lengkap" />
-                <Input placeholder="Email" type="email" />
+                <Input placeholder="Nama Lengkap" name="nama" id="kontak-nama" />
+                <Input placeholder="Email" type="email" name="email" id="kontak-email" />
               </div>
-              <Input placeholder="Subjek" />
-              <Textarea placeholder="Pesan Anda" rows={5} />
-              <Button className="w-full gradient-primary shadow-button">Kirim Pesan</Button>
+              <Input placeholder="Subjek" name="subjek" id="kontak-subjek" />
+              <Textarea placeholder="Pesan Anda" rows={5} name="pesan" id="kontak-pesan" />
+              <Button className="w-full gradient-primary shadow-button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const nama = (document.getElementById("kontak-nama") as HTMLInputElement | null)?.value || "";
+                  const email = (document.getElementById("kontak-email") as HTMLInputElement | null)?.value || "";
+                  const subjek = (document.getElementById("kontak-subjek") as HTMLInputElement | null)?.value || "";
+                  const pesan = (document.getElementById("kontak-pesan") as HTMLTextAreaElement | null)?.value || "";
+                  const msg = `Halo, saya mengirim pesan melalui halaman Kontak.\n\n`+
+                    `Nama: ${nama}\n`+
+                    `Email: ${email}\n`+
+                    `Subjek: ${subjek}\n`+
+                    `Pesan: ${pesan}`;
+                  const url = getWhatsAppLink(msg);
+                  window.open(url, "_blank");
+                }}
+              >Kirim Pesan</Button>
             </form>
           </div>
         </div>
