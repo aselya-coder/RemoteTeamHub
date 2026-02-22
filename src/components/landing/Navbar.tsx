@@ -118,6 +118,7 @@ export function Navbar() {
               Hire Talent
             </Button>
           </Link>
+
         </div>
 
         {/* Mobile Toggle */}
@@ -162,6 +163,7 @@ export function Navbar() {
               </Link>
 
             </div>
+
           </div>
         </div>
       )}

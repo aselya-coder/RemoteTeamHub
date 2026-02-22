@@ -1,5 +1,7 @@
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Users, Target, Award, Globe } from "lucide-react";
+import { useEffect, useState } from "react";
+import { cmsPages } from "@/lib/cms";
 
 const values = [
   { icon: Users, title: "People First", desc: "Kami percaya bahwa setiap talent memiliki potensi luar biasa yang perlu disalurkan." },
@@ -9,6 +11,11 @@ const values = [
 ];
 
 export default function TentangKami() {
+  const [desc, setDesc] = useState<string>("");
+  useEffect(() => {
+    const pages = cmsPages.getAll();
+    setDesc(pages.tentang.description);
+  }, []);
   return (
     <PageLayout>
       <div className="container mx-auto px-4 lg:px-8">
@@ -18,7 +25,7 @@ export default function TentangKami() {
             Membangun Masa Depan <span className="text-gradient">Kerja Remote</span>
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            KerjaTim.id adalah platform outsourcing tenaga kerja remote terdepan di Indonesia. Kami menghubungkan perusahaan dengan talent berkualitas tanpa kerumitan proses rekrutmen tradisional.
+            {desc || "KerjaTim.id adalah platform outsourcing tenaga kerja remote terdepan di Indonesia. Kami menghubungkan perusahaan dengan talent berkualitas tanpa kerumitan proses rekrutmen tradisional."}
           </p>
         </div>
 

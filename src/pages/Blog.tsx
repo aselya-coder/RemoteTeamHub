@@ -1,13 +1,26 @@
 import { PageLayout } from "@/components/layout/PageLayout";
 import { FileText, Calendar } from "lucide-react";
-
-const posts = [
-  { title: "5 Tips Mengelola Tim Remote dengan Efektif", date: "15 Feb 2026", category: "Tips", excerpt: "Pelajari cara terbaik untuk mengelola tim remote agar tetap produktif dan terhubung." },
-  { title: "Tren Outsourcing 2026: Apa yang Harus Diketahui", date: "10 Feb 2026", category: "Insight", excerpt: "Temukan tren terbaru dalam industri outsourcing dan bagaimana mempersiapkan bisnis Anda." },
-  { title: "Cara Memilih Talent Remote yang Tepat", date: "5 Feb 2026", category: "Guide", excerpt: "Panduan lengkap untuk memilih talent remote yang sesuai dengan kebutuhan perusahaan." },
-];
+import { useEffect, useState } from "react";
+import { cmsBlogs, BlogPost } from "@/lib/cms";
 
 export default function Blog() {
+  const [items, setItems] = useState<Array<BlogPost & { category?: string; excerpt?: string }>>([]);
+  useEffect(() => {
+    const list = cmsBlogs.list();
+    setItems(list);
+  }, []);
+  const posts = items.length
+    ? items.map((p) => ({
+        title: p.title,
+        date: p.date,
+        category: p.category || "",
+        excerpt: p.excerpt || p.content,
+      }))
+    : [
+        { title: "5 Tips Mengelola Tim Remote dengan Efektif", date: "15 Feb 2026", category: "Tips", excerpt: "Pelajari cara terbaik untuk mengelola tim remote agar tetap produktif dan terhubung." },
+        { title: "Tren Outsourcing 2026: Apa yang Harus Diketahui", date: "10 Feb 2026", category: "Insight", excerpt: "Temukan tren terbaru dalam industri outsourcing dan bagaimana mempersiapkan bisnis Anda." },
+        { title: "Cara Memilih Talent Remote yang Tepat", date: "5 Feb 2026", category: "Guide", excerpt: "Panduan lengkap untuk memilih talent remote yang sesuai dengan kebutuhan perusahaan." },
+      ];
   return (
     <PageLayout>
       <div className="container mx-auto px-4 lg:px-8">

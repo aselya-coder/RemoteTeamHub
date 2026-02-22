@@ -4,8 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { getWhatsAppLink } from "@/lib/whatsapp";
+import { useEffect, useState } from "react";
+import { cmsPages } from "@/lib/cms";
 
 export default function Kontak() {
+  const [email, setEmail] = useState("hello@kerjatim.id");
+  const [phone, setPhone] = useState("+62 21 1234 5678");
+  const [address, setAddress] = useState("Jakarta, Indonesia");
+  useEffect(() => {
+    const pages = cmsPages.getAll();
+    const k = pages.kontak;
+    setEmail(k.email || email);
+    setPhone(k.phone || phone);
+    setAddress(k.address || address);
+  }, []);
   return (
     <PageLayout>
       <div className="container mx-auto px-4 lg:px-8">
@@ -23,7 +35,7 @@ export default function Kontak() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Email</h3>
-                <p className="text-muted-foreground text-sm">hello@kerjatim.id</p>
+                <p className="text-muted-foreground text-sm">{email}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -34,10 +46,10 @@ export default function Kontak() {
                 <h3 className="font-semibold text-foreground">Telepon</h3>
                 <p className="text-muted-foreground text-sm"
                   onClick={() => {
-                    const url = getWhatsAppLink("Halo, saya ingin berkonsultasi.", "+62 21 1234 5678");
+                    const url = getWhatsAppLink("Halo, saya ingin berkonsultasi.", phone);
                     window.open(url, "_blank");
                   }}
-                >+62 21 1234 5678</p>
+                >{phone}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -46,7 +58,7 @@ export default function Kontak() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Alamat</h3>
-                <p className="text-muted-foreground text-sm">Jakarta, Indonesia</p>
+                <p className="text-muted-foreground text-sm">{address}</p>
               </div>
             </div>
           </div>
