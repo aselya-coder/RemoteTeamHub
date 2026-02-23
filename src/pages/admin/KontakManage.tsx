@@ -60,6 +60,7 @@ export default function KontakManage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Kontak</DialogTitle>
+              <p className="text-sm text-gray-400">Perbarui informasi email, telepon, dan alamat.</p>
             </DialogHeader>
             <div className="space-y-3">
               <input className="w-full p-2 rounded bg-[#1F2937] text-white placeholder:text-gray-400" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />

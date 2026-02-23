@@ -355,12 +355,42 @@ export const cmsFAQ = {
     return data;
   },
   create(item: Omit<FAQItem, "id">) {
-    const all = cmsFAQ.list();
     const id = crypto.randomUUID();
+    if (MODE === "supabase" && supabase) {
+      void (async () => {
+        try {
+          await supabase.from("faq").insert([{ id, ...item }]);
+        } catch {
+          /* noop */
+        }
+      })();
+    } else if (MODE === "api" && API_BASE) {
+      void fetch(`${API_BASE}/faq`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...item }),
+      }).catch(() => {});
+    }
+    const all = cmsFAQ.list();
     all.unshift({ id, ...item });
     writeJSON(LS.faq, all);
   },
   update(id: string, patch: Partial<FAQItem>) {
+    if (MODE === "supabase" && supabase) {
+      void (async () => {
+        try {
+          await supabase.from("faq").update(patch).eq("id", id);
+        } catch {
+          /* noop */
+        }
+      })();
+    } else if (MODE === "api" && API_BASE) {
+      void fetch(`${API_BASE}/faq/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      }).catch(() => {});
+    }
     const all = cmsFAQ.list();
     const idx = all.findIndex((f) => f.id === id);
     if (idx >= 0) {
@@ -369,6 +399,17 @@ export const cmsFAQ = {
     }
   },
   remove(id: string) {
+    if (MODE === "supabase" && supabase) {
+      void (async () => {
+        try {
+          await supabase.from("faq").delete().eq("id", id);
+        } catch {
+          /* noop */
+        }
+      })();
+    } else if (MODE === "api" && API_BASE) {
+      void fetch(`${API_BASE}/faq/${id}`, { method: "DELETE" }).catch(() => {});
+    }
     const all = cmsFAQ.list().filter((f) => f.id !== id);
     writeJSON(LS.faq, all);
   },

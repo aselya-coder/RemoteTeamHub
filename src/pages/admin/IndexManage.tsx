@@ -63,6 +63,7 @@ export default function IndexManage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Hero</DialogTitle>
+              <p className="text-sm text-gray-400">Perbarui judul, deskripsi, dan CTA pada halaman utama.</p>
             </DialogHeader>
             <div className="space-y-3">
               <input className="w-full p-2 rounded bg-[#1F2937] text-white placeholder:text-gray-400" placeholder="Hero Title" value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} />

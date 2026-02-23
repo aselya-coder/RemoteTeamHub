@@ -92,6 +92,7 @@ export default function TentangManage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{editIdx !== null ? "Edit Member" : "Member Baru"}</DialogTitle>
+              <p className="text-sm text-gray-400">Lengkapi nama, peran, dan foto anggota tim.</p>
             </DialogHeader>
             <div className="space-y-3">
               <input className="w-full p-2 rounded bg-[#1F2937] text-white placeholder:text-gray-400" placeholder="Nama" value={name} onChange={(e) => setName(e.target.value)} />

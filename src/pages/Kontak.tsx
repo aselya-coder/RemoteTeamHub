@@ -6,18 +6,46 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { getWhatsAppLink } from "@/lib/whatsapp";
 import { useEffect, useState } from "react";
 import { cmsPages } from "@/lib/cms";
+import { toast } from "@/components/ui/sonner";
 
 export default function Kontak() {
   const [email, setEmail] = useState("hello@kerjatim.id");
   const [phone, setPhone] = useState("+62 21 1234 5678");
   const [address, setAddress] = useState("Jakarta, Indonesia");
+  const [nama, setNama] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [subjek, setSubjek] = useState("");
+  const [pesan, setPesan] = useState("");
+  const [errors, setErrors] = useState<{ nama?: string; email?: string; subjek?: string; pesan?: string }>({});
   useEffect(() => {
     const pages = cmsPages.getAll();
     const k = pages.kontak;
-    setEmail(k.email || email);
-    setPhone(k.phone || phone);
-    setAddress(k.address || address);
+    setEmail(k.email || "hello@kerjatim.id");
+    setPhone(k.phone || "+62 21 1234 5678");
+    setAddress(k.address || "Jakarta, Indonesia");
+    const mode = (import.meta as ImportMeta).env?.VITE_CMS_BACKEND;
+    if (mode === "supabase") {
+      void cmsPages.syncAll().then(() => {
+        const p2 = cmsPages.getAll();
+        const k2 = p2.kontak;
+        setEmail(k2.email || "hello@kerjatim.id");
+        setPhone(k2.phone || "+62 21 1234 5678");
+        setAddress(k2.address || "Jakarta, Indonesia");
+      });
+    }
   }, []);
+
+  const validate = () => {
+    const next: { nama?: string; email?: string; subjek?: string; pesan?: string } = {};
+    if (!nama.trim()) next.nama = "Nama lengkap wajib diisi";
+    const em = emailInput.trim();
+    const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+    if (!em) next.email = "Email wajib diisi"; else if (!okEmail) next.email = "Format email tidak valid";
+    if (!subjek.trim()) next.subjek = "Subjek wajib diisi";
+    if (!pesan.trim() || pesan.trim().length < 10) next.pesan = "Pesan minimal 10 karakter";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
   return (
     <PageLayout>
       <div className="container mx-auto px-4 lg:px-8">
@@ -66,21 +94,25 @@ export default function Kontak() {
           <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
             <form className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
-                <Input placeholder="Nama Lengkap" name="nama" id="kontak-nama" />
-                <Input placeholder="Email" type="email" name="email" id="kontak-email" />
+                <Input placeholder="Nama Lengkap" name="nama" value={nama} onChange={(e) => setNama(e.target.value)} className={errors.nama ? "border-red-500" : ""} />
+                <Input placeholder="Email" type="email" name="email" value={emailInput} onChange={(e) => setEmailInput(e.target.value)} className={errors.email ? "border-red-500" : ""} />
               </div>
-              <Input placeholder="Subjek" name="subjek" id="kontak-subjek" />
-              <Textarea placeholder="Pesan Anda" rows={5} name="pesan" id="kontak-pesan" />
+              {errors.nama ? <p className="text-red-500 text-xs">{errors.nama}</p> : null}
+              {errors.email ? <p className="text-red-500 text-xs">{errors.email}</p> : null}
+              <Input placeholder="Subjek" name="subjek" value={subjek} onChange={(e) => setSubjek(e.target.value)} className={errors.subjek ? "border-red-500" : ""} />
+              {errors.subjek ? <p className="text-red-500 text-xs">{errors.subjek}</p> : null}
+              <Textarea placeholder="Pesan Anda" rows={5} name="pesan" value={pesan} onChange={(e) => setPesan(e.target.value)} className={errors.pesan ? "border-red-500" : ""} />
+              {errors.pesan ? <p className="text-red-500 text-xs">{errors.pesan}</p> : null}
               <Button className="w-full gradient-primary shadow-button"
                 onClick={(e) => {
                   e.preventDefault();
-                  const nama = (document.getElementById("kontak-nama") as HTMLInputElement | null)?.value || "";
-                  const email = (document.getElementById("kontak-email") as HTMLInputElement | null)?.value || "";
-                  const subjek = (document.getElementById("kontak-subjek") as HTMLInputElement | null)?.value || "";
-                  const pesan = (document.getElementById("kontak-pesan") as HTMLTextAreaElement | null)?.value || "";
+                  if (!validate()) {
+                    toast.error("Mohon lengkapi form kontak dengan benar");
+                    return;
+                  }
                   const msg = `Halo, saya mengirim pesan melalui halaman Kontak.\n\n`+
                     `Nama: ${nama}\n`+
-                    `Email: ${email}\n`+
+                    `Email: ${emailInput}\n`+
                     `Subjek: ${subjek}\n`+
                     `Pesan: ${pesan}`;
                   const url = getWhatsAppLink(msg);

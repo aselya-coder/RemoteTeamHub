@@ -55,6 +55,7 @@ export default function SyaratManage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Konten</DialogTitle>
+              <p className="text-sm text-gray-400">Perbarui syarat dan ketentuan layanan.</p>
             </DialogHeader>
             <div className="space-y-3">
               <textarea className="w-full min-h-80 p-3 rounded bg-[#1F2937] text-white placeholder:text-gray-400" value={draft} onChange={(e) => setDraft(e.target.value)} />

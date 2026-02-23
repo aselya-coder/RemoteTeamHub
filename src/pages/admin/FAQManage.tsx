@@ -57,6 +57,7 @@ export default function FAQManage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{edit ? "Edit FAQ" : "FAQ Baru"}</DialogTitle>
+              <p className="text-sm text-gray-400">Isi pertanyaan dan jawaban secara singkat dan jelas.</p>
             </DialogHeader>
             <div className="space-y-3">
               <input className="w-full p-2 rounded bg-[#1F2937] text-white placeholder:text-gray-400" placeholder="Pertanyaan" value={question} onChange={(e) => setQuestion(e.target.value)} />

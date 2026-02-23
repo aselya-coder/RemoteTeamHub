@@ -28,7 +28,6 @@ export default function AdminLogin() {
         <input className="w-full mb-4 p-3 rounded bg-[#1F2937] text-white placeholder:text-gray-400" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input type="password" className="w-full mb-6 p-3 rounded bg-[#1F2937] text-white placeholder:text-gray-400" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-semibold">Masuk</button>
-        <p className="text-xs text-gray-400 mt-3">Demo: admin@demo.id / admin123</p>
       </form>
     </div>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 const navItems = [
   { label: "Beranda", href: "/" },
@@ -112,12 +113,17 @@ export function Navbar() {
             </Button>
           </Link>
 
-          {/* ✅ HIRE TALENT → REGISTER CLIENT */}
-          <Link to="/register?role=client">
-            <Button size="sm" className="gradient-primary shadow-button">
-              Hire Talent
-            </Button>
-          </Link>
+          {/* ✅ HIRE TALENT → WhatsApp */}
+          <Button
+            size="sm"
+            className="gradient-primary shadow-button"
+            onClick={() => {
+              const url = getWhatsAppLink("Halo, saya ingin hire talent melalui KerjaTim.id. Mohon informasinya.");
+              window.open(url, "_blank");
+            }}
+          >
+            Hire Talent
+          </Button>
 
         </div>
 
@@ -155,12 +161,17 @@ export function Navbar() {
                 </Button>
               </Link>
 
-              {/* MOBILE HIRE */}
-              <Link to="/register?role=client" className="flex-1">
-                <Button size="sm" className="w-full gradient-primary">
-                  Hire Talent
-                </Button>
-              </Link>
+              {/* MOBILE HIRE → WhatsApp */}
+              <Button
+                size="sm"
+                className="w-full gradient-primary"
+                onClick={() => {
+                  const url = getWhatsAppLink("Halo, saya ingin hire talent melalui KerjaTim.id. Mohon informasinya.");
+                  window.open(url, "_blank");
+                }}
+              >
+                Hire Talent
+              </Button>
 
             </div>
 
